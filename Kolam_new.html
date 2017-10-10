@@ -1,0 +1,475 @@
+<html>
+	<head>
+	
+	
+	<title>Kolam App</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <style>
+            
+			
+			
+            .middle_1{
+                background-color: #ffffff;
+                min-height:300px;
+				min-width:125px;
+				
+                position: inherit !important;
+            }
+            .middle_2{
+                background-color: #f2f2f2;
+                /*min-height:720px;*/
+                padding:10px;
+                padding-left:80px;
+            }
+            #canvasDiv{
+                margin-top: 30px;
+                margin-left: 15px;
+            }
+            .middle_2_1{
+                margin-top: 15px;
+            }
+            #clearCanvas, #doneDrawing {
+                width: 135px;
+            }
+            #reDraw, #saveDrawing {
+                width: 135px;
+                margin-left: 13px;
+            }
+            #canvasSignature {
+                display:none;
+            }
+            #canvasDiv {
+                border:1px solid black;
+            }
+            .imgdiv {
+                margin-top:50px;
+                min-height: 500px;
+            }
+			.header{
+			background-color:blue;
+			}
+
+            
+        </style>
+	</head>
+	<body>
+	<div class="header"><font size="20" color="white">KOLAM APPLICATION</font></div><br>
+	
+	<div class="container">
+		
+		<div class="row">
+			<div class="col-md-2 col-md-offset-1 col-sm-5 col-sm-offset-1">
+				<button>Daily Task</button>
+			</div>
+			<div class="col-md-2 col-md-offset-7 col-sm-5 ">
+				
+				<div class="row">
+					<div class="srch col-md-12 col-sm-12">
+						<input type="search" placeholder="ignite id">
+					</div>	
+				</div>
+				<div class="row">
+					<div class="form-group">
+						<div class="col-md-12 col-sm-12"><br>
+							 <button name="singlebutton" class="btn btn-success" id="doneDrawing">Done</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>	
+					
+	<center>
+        
+            <div class="col-md-4 col-lg-3 col-sm-12 middle_1" id="canvasDiv">
+                <canvas id="canvasSignature" width="50px" height="10px" style="border:2px"></canvas>
+            </div>
+			<div class="col-md-4 col-lg-3 col-sm-12 middle_1" id="canvasDiv">
+                <canvas id="canvasSignature" width="50px" height="10px" style="border:2px"></canvas>
+            </div>
+			<div class="col-md-4 col-lg-3 col-sm-12 middle_1" id="canvasDiv">
+                <canvas id="canvasSignature" width="50px" height="10px" style="border:2px"></canvas>
+            </div>
+
+		
+	</center>
+	</div>
+	<script>
+	
+var all_strokes = [];
+var final_stroke = [];
+var final_stroke1 = []
+var all_startPoint = [];
+var count = 0;
+function getPosition(mouseEvent, sigCanvas) {
+    var x, y;
+    if (mouseEvent.pageX != undefined && mouseEvent.pageY != undefined) {
+        x = mouseEvent.pageX;
+        y = mouseEvent.pageY;
+    } else {
+        x = mouseEvent.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+        y = mouseEvent.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+    }
+
+    return {X: x - sigCanvas.offsetLeft, Y: y - sigCanvas.offsetTop};
+}
+
+function detect_is_touch_device() {
+    return (('ontouchstart' in window)
+            || (navigator.MaxTouchPoints > 0)
+            || (navigator.msMaxTouchPoints > 0));
+}
+
+function initialize() {
+    var sigCanvas = document.getElementById("canvasSignature");
+    var context = sigCanvas.getContext("2d");
+    context.strokeStyle = 'Black';
+    var is_touch_device = detect_is_touch_device();
+
+    console.log(is_touch_device);
+
+    if (is_touch_device) {
+        console.log("sddds");
+        var drawer = {
+            isDrawing: false,
+            touchstart: function (coors) {
+                context.beginPath();
+             
+                context.moveTo(coors.x, coors.y);
+                this.isDrawing = true;
+            },
+            touchmove: function (coors) {
+                if (this.isDrawing) {
+                  var x = drawLine1(coors.x, coors.y);
+                 alert(x);
+                  console.log({x: coors.x, y: coors.y});
+                    context.lineTo(coors.x, coors.y);
+                    context.stroke();
+                }
+            },
+            touchend: function (coors) {
+                if (this.isDrawing) {
+                    alert("touch end");
+                   this.touchmove(coors);
+                    this.isDrawing = false;
+                }
+            }
+        };
+
+        function draw(event) {
+            if (event.type === "touchmove" || event.type === "touchstart") {
+                var coors = {
+                    x: event.targetTouches[0].pageX,
+                    y: event.targetTouches[0].pageY
+                };
+
+                final_stroke1 = drawLine1(coors.x, coors.y);
+                var obj = sigCanvas;
+
+                if (obj.offsetParent) {
+                    do {
+                        coors.x -= obj.offsetLeft;
+                        coors.y -= obj.offsetTop;
+                    } while ((obj = obj.offsetParent) != null);
+                }
+                drawer[event.type](coors);
+            } else {
+                all_strokes.push(final_stroke1);
+                final_stroke1 = [];
+                drawer[event.type](coors);
+            }
+        }
+
+
+
+        sigCanvas.addEventListener('touchstart', draw, false);
+        sigCanvas.addEventListener('touchmove', draw, false);
+        sigCanvas.addEventListener('touchend', draw, false);
+
+        sigCanvas.addEventListener('touchmove', function (event) {
+            event.preventDefault();
+        }, false);
+    } else {
+        $("#canvasSignature").mousedown(function (mouseEvent) {
+            var position = getPosition(mouseEvent, sigCanvas);
+            console.log(position);
+            context.moveTo(position.X, position.Y);
+            context.beginPath();
+
+            $(this).mousemove(function (mouseEvent) {
+                drawLine(mouseEvent, sigCanvas, context);
+            }).mouseup(function (mouseEvent) {
+                finishDrawing(mouseEvent, sigCanvas, context);
+            }).mouseout(function (mouseEvent) {
+                finishDrawing(mouseEvent, sigCanvas, context);
+            });
+        });
+
+    }
+    return context;
+}
+
+
+function drawCoordinates(x, y, ctx) {
+    var pointSize = 3;
+    ctx.fillStyle = "#ff2626";
+
+    ctx.beginPath(); //Start path
+    ctx.arc(x, y, pointSize, 0, Math.PI * 2, true);
+    ctx.fill();
+}
+function drawLine(mouseEvent, sigCanvas, context) {
+
+    var position = getPosition(mouseEvent, sigCanvas);
+    context.lineTo(position.X, position.Y);
+    console.log(position);
+    final_stroke.push(position);
+
+    context.stroke();
+}
+function drawLine1(x, y) {
+
+    final_stroke.push({X: parseInt(x, 10), Y: parseInt(y, 10)});
+    return final_stroke;
+}
+function finishDrawing(mouseEvent, sigCanvas, context) {
+    drawLine(mouseEvent, sigCanvas, context);
+    all_strokes.push(final_stroke);
+    final_stroke = [];
+    context.closePath();
+    $(sigCanvas).unbind("mousemove")
+            .unbind("mouseup")
+            .unbind("mouseout");
+}
+
+function traceKolam(ctx, x1, y1, x2, y2) {
+    console.log("qwerty");
+    console.log(x1, y1, x2, y2);
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+}
+
+
+function getIndex(temp2, temp1) {
+    check_arr = [];
+    var ind = -1;
+    var arr = []
+    var min = 1000
+    var chk = -1;
+    for (var i = 0; i < temp2.length; i++) {
+        min = 10000;
+
+        for (var j = 0; j < temp1.length; j++) {
+            var ans = Math.sqrt(Math.pow((temp2[i].X - temp1[j].x), 2) + Math.pow((temp2[i].Y - temp1[j].y), 2));
+			console.log(ans);
+            if (min > ans) {
+                min = ans;
+                ind = j + 1;
+            }
+        }
+        if (chk != ind) {
+            arr.push(ind);
+            chk = ind;
+        }
+    }
+    return arr;
+
+}
+
+function drawing(final_stroke, context, index, callback) {
+    var i = 0;
+    console.log(final_stroke);
+    var x = setInterval(function () {
+        if (i < final_stroke.length - 1) {
+            console.log(final_stroke[i]);
+            traceKolam(context, final_stroke[i]['X'], final_stroke[i]['Y'], final_stroke[i + 1]['X'], final_stroke[i + 1]['Y']);
+            i = i + 1;
+        } else if (i === final_stroke.length - 1) {
+            callback(index);
+            clearInterval(x);
+        }
+    }, 40);
+}
+var number = 0;
+$(document).ready(function () {
+    var grid_layout = [];
+    var context = initialize();
+
+    $("#drawGrid").on("click", function () {
+        grid_layout = [];
+        all_pattern = [];
+        first_strokes = [];
+        all_strokes = [];
+        all_pattern = [];
+        context.clearRect(0, 0, 1100, 700);
+        $("#canvasSignature").css("display", "inline-block");
+        $("#canvasDiv").css("border", "none");
+        $("#clearCanvas").removeAttr("disabled");
+        $("#reDraw").removeAttr("disabled");
+        $("#doneDrawing").removeAttr("disabled");
+        $("#saveDrawing").removeAttr("disabled");
+        var selectedgrid = $("#selected_grid option:selected").val();
+        var grid = selectedgrid;
+        number = grid;
+        var mid_x = 475;
+        var mid_y = 350;
+        if (grid % 2 !== 0) {
+            var step = Math.floor(grid / 2);
+            var start_x = mid_x - (step * 100);
+            var start_y = mid_y - (step * 100);
+            for (var i = 0; i < grid; i++) {
+                var temp_y = start_y;
+                for (var j = 0; j < grid; j++)
+                {
+                    grid_layout.push({x: start_x, y: temp_y});
+                    temp_y = temp_y + 100;
+                }
+                start_x = start_x + 100;
+            }
+        } else {
+            console.log("even");
+            var step = Math.floor(grid / 2);
+            var start_x = mid_x - ((step) * 100) + 50;
+            var start_y = mid_y - ((step) * 100) + 50;
+
+            for (var i = 0; i < grid; i++) {
+                var temp_y = start_y;
+                for (var j = 0; j < grid; j++)
+                {
+                    grid_layout.push({x: start_x, y: temp_y});
+                    temp_y = temp_y + 100;
+                }
+                start_x = start_x + 100;
+            }
+        }
+         console.log(grid_layout);
+        for (var i = 0; i < grid_layout.length; i++) {
+            drawCoordinates(grid_layout[i]['x'], grid_layout[i]['y'], context);
+                       console.log(grid_layout[i]['x']);
+        }
+    });
+
+    $("#clearCanvas").on("click", function () {
+        context.clearRect(0, 0, 1100, 700);
+        $("#clearCanvas").attr("disabled", "disabled");
+        $("#reDraw").attr("disabled", "disabled");
+        $("#doneDrawing").attr("disabled", "disabled");
+        $("#saveDrawing").attr("disabled", "disabled");
+        $("#canvasSignature").css("display", "none");
+        $("#canvasDiv").css("border", "1px solid black");
+        grid_layout = [];
+        all_pattern = [];
+        first_strokes = [];
+        all_strokes = [];
+        all_pattern = [];
+        console.log("refresh");
+        location.reload();
+
+    });
+
+    $("#doneDrawing").on("click", function () {
+       all_strokes;
+        all_strokes.length;
+        all_pattern = [];
+        alert(all_strokes.length);
+        console.log(all_strokes);
+        var first_strokes = [];
+        for (var i = 0; i < all_strokes.length; i++) {
+            ind_Pattern = getIndex(all_strokes[i], grid_layout);
+            all_pattern.push(ind_Pattern);
+            var temp = {
+                "starting": ind_Pattern[0]
+            };
+            first_strokes.push(temp);
+
+        }
+        var taskname = "task_1";
+        final_text_data = {
+            "all_strokes": all_strokes,
+            "no_of_stroke": all_strokes.length,
+            "grid_size": number,
+            "grid_layout": grid_layout,
+            "all_drawing_pattern": all_pattern,
+            "first_strokes": first_strokes
+        };
+
+        $.ajax({
+            url: "../../NewUploadServlet",
+            type: 'POST',
+            data: {
+                data: JSON.stringify(final_text_data),
+                taskname: taskname
+            },
+            success: function (data) {
+                if (data) {
+                    grid_layout = [];
+                    all_pattern = [];
+                    first_strokes = [];
+                    all_strokes = [];
+                    all_pattern = [];
+                    alert("SuccessFully Uploaded");
+                    window.location.reload();
+                } else {
+                    alert("Something went wrong");
+                    location.reload();
+                }
+            }, error: function (data) {
+                console.log(data);
+                alert("error");
+            }
+
+        });
+
+
+
+        all_strokes = [];
+        final_stroke = [];
+
+       context.clearRect(0, 0, 1100, 700);
+        $("#clearCanvas").attr("disabled", "disabled");
+        $("#reDraw").attr("disabled", "disabled");
+        $("#doneDrawing").attr("disabled", "disabled");
+        $("#saveDrawing").attr("disabled", "disabled");
+        $("#canvasSignature").css("display", "none");
+        $("#canvasDiv").css("border", "1px solid black");
+        
+        console.log("refresh");
+        location.reload();
+
+
+        return false;
+
+    });
+
+    $("#reDraw").on("click", function () {
+
+        context.clearRect(0, 0, 1100, 700);
+
+        for (var i = 0; i < grid_layout.length; i=i+30) {
+            drawCoordinates(grid_layout[i]['x'], grid_layout[i]['y'], context);
+        }
+        i = 0;
+        var i = 0;
+
+        drawing(all_strokes[i], context, i, redrawCallback);
+    });
+
+    function redrawCallback(i) {
+        i = i + 1;
+        if (i !== all_strokes.length) {
+            drawing(all_strokes[i], context, i, redrawCallback);
+        }
+    }
+});
+
+
+
+	</script>
+	
+
+	</body>
+</html>

@@ -1,0 +1,113 @@
+<html>
+    <head>
+<title>Kolam App</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <style>
+            
+			
+			
+            .middle_1{
+                background-color: #ffffff;
+                min-height:300px;
+				min-width:125px;
+				
+                position: inherit !important;
+            }
+            .middle_2{
+                background-color: #f2f2f2;
+                /*min-height:720px;*/
+                padding:10px;
+                padding-left:80px;
+            }
+            #canvasDiv{
+                margin-top: 30px;
+                margin-left: 15px;
+            }
+            .middle_2_1{
+                margin-top: 15px;
+            }
+            #clearCanvas, #doneDrawing {
+                width: 135px;
+            }
+            #reDraw, #saveDrawing {
+                width: 135px;
+                margin-left: 13px;
+            }
+            #canvasSignature {
+                display:none;
+            }
+            #canvasDiv {
+                border:1px solid black;
+            }
+            .imgdiv {
+                margin-top:50px;
+                min-height: 500px;
+            }
+			.header{
+			background-color:blue;
+			}
+
+            
+        </style>
+    </head>
+    <body style=" background: lightblue;">
+	<div class="header"><font size="20" color="white"><center>KOLAM APPLICATION</center></font></div><br>
+	<div class="container">
+		
+		<div class="row">
+			<div class="col-md-2 col-md-offset-1 col-sm-5 col-sm-offset-1">
+				<button>Daily Task</button>
+			</div>
+			<div class="col-md-2 col-md-offset-7 col-sm-5 ">
+				
+				<div class="row">
+					<div class="srch col-md-12 col-sm-12">
+						<input type="search" placeholder="ignite id">
+					</div>	
+				</div>
+				<div class="row">
+					<div class="form-group">
+						<div class="col-md-12 col-sm-12"><br>
+							 <button name="singlebutton" class="btn btn-success" id="doneDrawing">Done</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>	
+	
+	
+        <canvas id="canvas" width="420px" height="420px" style="background: #fff;     magrin:20px;"></canvas>
+	</div>
+        <script type="text/javascript" language="javascript">
+    var bw = 400;
+    var bh = 400;
+    var p = 10;
+    var cw = bw + (p*2) + 1;
+    var ch = bh + (p*2) + 1;
+
+    var canvas = document.getElementById("canvas");
+    var context = canvas.getContext("2d");
+    function drawBoard(){
+    for (var x = 0; x <= bw; x += 40) {
+        context.moveTo(0.5 + x + p, p);
+        context.lineTo(0.5 + x + p, bh + p);
+    }
+
+
+    for (var x = 0; x <= bh; x += 40) {
+        context.moveTo(p, 0.5 + x + p);
+        context.lineTo(bw + p, 0.5 + x + p);
+    }
+
+    context.strokeStyle = "black";
+    context.stroke();
+    }
+
+    drawBoard();
+    </script>
+    </body>
+    </html>
