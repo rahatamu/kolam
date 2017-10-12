@@ -1,0 +1,36 @@
+What is the structured diagram that represents the business model called?
+Logical data model Business data model Real world model Real data model
+A logical data model comprises of _________ and _________ 
+Tables and columnsEntities and attributesEntities and columnsTables and attributes
+The foreign key in a table is a combination of column values that references a _________ in another table 
+Primary keyForeign keyCandidate keySuper key
+Which of the following is not an advantage of using a design methodology?
+It enables you to design a database sequentiallyIt eliminates trail and error in the design processIt provides a framework for structuring entities and utilitiesIt enables you to document the database through design plans and drawings
+The "top-down" design approach is a popular methodology, which is also known as __________
+Design by analysisRequirement analysisLogical designPhysical DB design
+Data in a well-designed database is easy to ________
+accessmodifybackuprecover
+Find the odd one out with respect to properties of a well-designed database
+ExternalConceptualInternalInline
+The transformation of requests between the three-schema architecture is called _________
+MappingQueryJoinsNone of the given options
+The two types of data independence included in three-schema database architecture are _________
+Physical and logical independenceExternal and internal independenceConceptual and logical independence
+During which phase of the database design life cycle does database tuning occur? 
+Requirements gathering and analysisLogical database designPhysical database designData modeling
+Specialized programming languages can be divide into ______ categories
+FiveFourThreeSix
+Examples of RAD langauage are ___________
+Visual Basics, Delphi and Visual C#COBOL and FORTRANPHP and JavaScriptSQL and Visual Basics
+The first editors that were used were _________ editors
+LineTextCode
+The _________ reads the entire source code and translates it as a whole into machine language
+CompilerInterpreterDebugger
+The __________ reads and converts code to machine language one line at a time.
+CompilerInterpreterDebugger
+A code may contain __________ 
+Syntax and logical errorsOnly logical errorsOnly syntax errors
+Profilers use two methods to examine a program. They are
+Sampling and instrumentationLoading and debuggingCompiling and debuggingSampling and compiling
+Which are the guidelines for using the top-down approach to algorithm writing
+No step should be ambiguousUse indentationSteps should result in output at some pointProvide one entry and one exit point for an algorithm
